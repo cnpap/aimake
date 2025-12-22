@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\DataSource;
 use App\Models\DataSourceTable;
+use App\Models\DataSourceTableColumn;
 use App\Models\DimensionAttribute;
 use App\Models\DimensionMapping;
 use App\Models\User;
@@ -57,13 +58,13 @@ class DatabaseSeeder extends Seeder
                 'table_name' => 'ncybj_medical_retail_settlement',
                 'table_comment' => '医保定点零售药店刷卡明细（假）',
                 'columns' => [
-                    ['name' => 'jsID', 'type' => 'string', 'comment' => '结算ID', 'is_nullable' => false, 'default' => null, 'rules' => 'required|string|max:64'],
-                    ['name' => 'rybh', 'type' => 'string', 'comment' => '人员编号', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|string|max:64'],
-                    ['name' => 'ryxm', 'type' => 'string', 'comment' => '人员姓名', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|string|max:64'],
-                    ['name' => 'zjhm', 'type' => 'string', 'comment' => '身份证件号码', 'is_nullable' => false, 'default' => null, 'rules' => 'required|string|min:15|max:18'],
-                    ['name' => 'jjzfze', 'type' => 'decimal', 'comment' => '基金支付总额', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|numeric'],
-                    ['name' => 'ylfze', 'type' => 'decimal', 'comment' => '医疗费总额', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|numeric'],
-                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|date'],
+                    ['name' => 'jsID', 'type' => 'string', 'comment' => '结算ID'],
+                    ['name' => 'rybh', 'type' => 'string', 'comment' => '人员编号'],
+                    ['name' => 'ryxm', 'type' => 'string', 'comment' => '人员姓名'],
+                    ['name' => 'zjhm', 'type' => 'string', 'comment' => '身份证件号码'],
+                    ['name' => 'jjzfze', 'type' => 'decimal', 'comment' => '基金支付总额'],
+                    ['name' => 'ylfze', 'type' => 'decimal', 'comment' => '医疗费总额'],
+                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间'],
                 ],
                 'columns_count' => 7,
                 'estimated_rows' => 1_200,
@@ -73,12 +74,12 @@ class DatabaseSeeder extends Seeder
                 'table_name' => 'ncybj_resident_medical_insurance_basic_info',
                 'table_comment' => '城乡居民医保参保基本信息（假）',
                 'columns' => [
-                    ['name' => 'sfzh', 'type' => 'string', 'comment' => '身份证件号码', 'is_nullable' => false, 'default' => null, 'rules' => 'required|string|min:15|max:18'],
-                    ['name' => 'xm', 'type' => 'string', 'comment' => '姓名', 'is_nullable' => false, 'default' => null, 'rules' => 'required|string|max:64'],
-                    ['name' => 'cbzt', 'type' => 'string', 'comment' => '当前参保状态', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|string|max:32'],
-                    ['name' => 'cbnd', 'type' => 'integer', 'comment' => '当前缴费年度', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|integer'],
-                    ['name' => 'jfzje', 'type' => 'decimal', 'comment' => '当前缴费金额', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|numeric'],
-                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|date'],
+                    ['name' => 'sfzh', 'type' => 'string', 'comment' => '身份证件号码'],
+                    ['name' => 'xm', 'type' => 'string', 'comment' => '姓名'],
+                    ['name' => 'cbzt', 'type' => 'string', 'comment' => '当前参保状态'],
+                    ['name' => 'cbnd', 'type' => 'integer', 'comment' => '当前缴费年度'],
+                    ['name' => 'jfzje', 'type' => 'decimal', 'comment' => '当前缴费金额'],
+                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间'],
                 ],
                 'columns_count' => 6,
                 'estimated_rows' => 3_500,
@@ -88,45 +89,64 @@ class DatabaseSeeder extends Seeder
                 'table_name' => 'szfgjj_housing_provident_fund_deposit_record',
                 'table_comment' => '公积金缴存明细（假）',
                 'columns' => [
-                    ['name' => 'grzh', 'type' => 'string', 'comment' => '个人账号', 'is_nullable' => false, 'default' => null, 'rules' => 'required|string|max:64'],
-                    ['name' => 'xingming', 'type' => 'string', 'comment' => '姓名', 'is_nullable' => false, 'default' => null, 'rules' => 'required|string|max:64'],
-                    ['name' => 'zjhm', 'type' => 'string', 'comment' => '身份证件号码', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|string|min:15|max:18'],
-                    ['name' => 'jcje', 'type' => 'decimal', 'comment' => '缴存金额', 'is_nullable' => false, 'default' => null, 'rules' => 'required|numeric'],
-                    ['name' => 'jzrq', 'type' => 'date', 'comment' => '记账日期', 'is_nullable' => false, 'default' => null, 'rules' => 'required|date'],
-                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间', 'is_nullable' => true, 'default' => null, 'rules' => 'nullable|date'],
+                    ['name' => 'grzh', 'type' => 'string', 'comment' => '个人账号'],
+                    ['name' => 'xingming', 'type' => 'string', 'comment' => '姓名'],
+                    ['name' => 'zjhm', 'type' => 'string', 'comment' => '身份证件号码'],
+                    ['name' => 'jcje', 'type' => 'decimal', 'comment' => '缴存金额'],
+                    ['name' => 'jzrq', 'type' => 'date', 'comment' => '记账日期'],
+                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间'],
                 ],
                 'columns_count' => 6,
                 'estimated_rows' => 2_800,
             ],
         ];
 
-        $columnType = static function (array $table, string $column): ?string {
-            $found = collect($table['columns'] ?? [])->firstWhere('name', $column);
+        $tableModels = [];
+        $columnModels = [];
 
-            return $found['type'] ?? null;
-        };
-
-        $tableModels = collect($tables)->mapWithKeys(function (array $table) use ($dataSource) {
-            $model = DataSourceTable::query()->updateOrCreate(
+        foreach ($tables as $table) {
+            $tableModel = DataSourceTable::query()->updateOrCreate(
                 [
                     'data_source_id' => $dataSource->id,
                     'schema_name' => $table['schema_name'],
                     'table_name' => $table['table_name'],
                 ],
                 [
-                    ...$table,
+                    'table_comment' => $table['table_comment'],
+                    'columns_count' => $table['columns_count'],
+                    'estimated_rows' => $table['estimated_rows'],
                     'last_profiled_at' => now(),
                 ]
             );
 
-            return [$table['table_name'] => $model];
-        });
+            $tableModels[$table['table_name']] = $tableModel;
+
+            $columnModels[$table['table_name']] = collect($table['columns'])->mapWithKeys(
+                function (array $column, int $index) use ($tableModel) {
+                    $columnModel = DataSourceTableColumn::query()->updateOrCreate(
+                        [
+                            'data_source_table_id' => $tableModel->id,
+                            'name' => $column['name'],
+                        ],
+                        [
+                            'type' => $column['type'],
+                            'comment' => $column['comment'],
+                            'position' => $index + 1,
+                        ]
+                    );
+
+                    return [$column['name'] => $columnModel];
+                }
+            );
+        }
 
         $attribute = fn (string $code): ?DimensionAttribute => DimensionAttribute::query()->where('code', $code)->first();
-        $map = function (?string $code, DataSourceTable $table, array $tableDef, string $column, array $payload = []) use ($attribute, $columnType): void {
+        $map = function (?string $code, string $tableName, string $column, array $payload = []) use ($attribute, $tableModels, $columnModels): void {
             $attr = $code ? $attribute($code) : null;
+            $table = $tableModels[$tableName] ?? null;
+            $columnModel = $columnModels[$tableName][$column] ?? null;
 
-            if (! $attr) {
+            if (! $attr || ! $table || ! ($columnModel instanceof DataSourceTableColumn)) {
                 return;
             }
 
@@ -134,39 +154,24 @@ class DatabaseSeeder extends Seeder
                 [
                     'dimension_attribute_id' => $attr->id,
                     'data_source_table_id' => $table->id,
-                    'column_name' => $column,
+                    'data_source_table_column_id' => $columnModel->id,
                 ],
-                [
-                    'source_column_type' => $columnType($tableDef, $column),
-                    ...$payload,
-                ]
+                $payload
             );
         };
 
-        $settlementTable = $tableModels['ncybj_medical_retail_settlement'] ?? null;
-        if ($settlementTable) {
-            $settlementDef = $tables[0];
-            $map('id_number', $settlementTable, $settlementDef, 'zjhm', ['confidence' => 90]);
-            $map('full_name', $settlementTable, $settlementDef, 'ryxm', ['confidence' => 80]);
-            $map('settlement_id', $settlementTable, $settlementDef, 'jsID', ['confidence' => 95]);
-            $map('fund_total', $settlementTable, $settlementDef, 'jjzfze', ['confidence' => 60]);
-            $map('medical_total', $settlementTable, $settlementDef, 'ylfze', ['confidence' => 60]);
-        }
+        $map('id_number', 'ncybj_medical_retail_settlement', 'zjhm', ['confidence' => 90]);
+        $map('full_name', 'ncybj_medical_retail_settlement', 'ryxm', ['confidence' => 80]);
+        $map('settlement_id', 'ncybj_medical_retail_settlement', 'jsID', ['confidence' => 95]);
+        $map('fund_total', 'ncybj_medical_retail_settlement', 'jjzfze', ['confidence' => 60]);
+        $map('medical_total', 'ncybj_medical_retail_settlement', 'ylfze', ['confidence' => 60]);
 
-        $residentTable = $tableModels['ncybj_resident_medical_insurance_basic_info'] ?? null;
-        if ($residentTable) {
-            $residentDef = $tables[1];
-            $map('id_number', $residentTable, $residentDef, 'sfzh', ['confidence' => 90]);
-            $map('full_name', $residentTable, $residentDef, 'xm', ['confidence' => 80]);
-        }
+        $map('id_number', 'ncybj_resident_medical_insurance_basic_info', 'sfzh', ['confidence' => 90]);
+        $map('full_name', 'ncybj_resident_medical_insurance_basic_info', 'xm', ['confidence' => 80]);
 
-        $housingFundTable = $tableModels['szfgjj_housing_provident_fund_deposit_record'] ?? null;
-        if ($housingFundTable) {
-            $housingDef = $tables[2];
-            $map('id_number', $housingFundTable, $housingDef, 'zjhm', ['confidence' => 85]);
-            $map('personal_account', $housingFundTable, $housingDef, 'grzh', ['confidence' => 95]);
-            $map('deposit_amount', $housingFundTable, $housingDef, 'jcje', ['confidence' => 85]);
-            $map('posting_date', $housingFundTable, $housingDef, 'jzrq', ['confidence' => 85]);
-        }
+        $map('id_number', 'szfgjj_housing_provident_fund_deposit_record', 'zjhm', ['confidence' => 85]);
+        $map('personal_account', 'szfgjj_housing_provident_fund_deposit_record', 'grzh', ['confidence' => 95]);
+        $map('deposit_amount', 'szfgjj_housing_provident_fund_deposit_record', 'jcje', ['confidence' => 85]);
+        $map('posting_date', 'szfgjj_housing_provident_fund_deposit_record', 'jzrq', ['confidence' => 85]);
     }
 }

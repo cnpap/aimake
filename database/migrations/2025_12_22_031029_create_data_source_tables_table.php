@@ -19,12 +19,11 @@ return new class extends Migration
             $table->string('table_comment')->nullable()->comment('表备注/描述');
             $table->unsignedInteger('columns_count')->default(0)->comment('列数量');
             $table->unsignedBigInteger('estimated_rows')->nullable()->comment('预估行数');
-            $table->json('columns')->nullable()->comment('列元数据数组：[{name,type,comment,is_nullable,default}]');
             $table->timestamp('last_profiled_at')->nullable()->comment('最近列探查时间');
             $table->timestamps();
 
             $table->unique(['data_source_id', 'schema_name', 'table_name']);
-            $table->comment('数据源下的具体表元数据与探查信息');
+            $table->comment('数据源下的具体表元数据与探查信息，不包含列明细');
         });
     }
 

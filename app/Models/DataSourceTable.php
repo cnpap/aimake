@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $table_comment 表备注/描述
  * @property int $columns_count 列数量
  * @property int|null $estimated_rows 预估行数
- * @property array<array-key, mixed>|null $columns 列元数据数组：[{name,type,comment,is_nullable,default}]
  * @property \Illuminate\Support\Carbon|null $last_profiled_at 最近列探查时间
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\DataSource $dataSource
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DataSourceTableColumn> $columns
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DimensionMapping> $mappings
  * @property-read int|null $mappings_count
  *
@@ -51,16 +51,19 @@ class DataSourceTable extends Model
         'table_comment',
         'columns_count',
         'estimated_rows',
-        'columns',
         'last_profiled_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'columns' => 'array',
             'last_profiled_at' => 'datetime',
         ];
+    }
+
+    public function columns(): HasMany
+    {
+        return $this->hasMany(DataSourceTableColumn::class);
     }
 
     public function dataSource(): BelongsTo
