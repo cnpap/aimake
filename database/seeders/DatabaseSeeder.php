@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\DataSource;
-use App\Models\DataSourceTable;
-use App\Models\DataSourceTableColumn;
 use App\Models\DimensionAttribute;
 use App\Models\DimensionMapping;
 use App\Models\User;
@@ -32,129 +30,51 @@ class DatabaseSeeder extends Seeder
             DimensionSeeder::class,
         ]);
 
+        $driver = env('DB_CONNECTION', 'sqlite');
+        $connection = config("database.connections.{$driver}", []);
+
         $dataSource = DataSource::query()->updateOrCreate(
-            ['name' => 'Demo Gov Data', 'driver' => 'postgres'],
+            ['name' => 'Demo Gov Data', 'driver' => $driver],
             [
-                'ingest_mode' => 'incremental',
-                'host' => 'demo-db.local',
-                'port' => 5432,
-                'database' => 'demo',
-                'username' => 'readonly',
+                'ingest_mode' => 'full',
+                'url' => $connection['url'] ?? null,
+                'host' => $connection['host'] ?? null,
+                'port' => $connection['port'] ?? null,
+                'database' => $connection['database'] ?? null,
+                'username' => $connection['username'] ?? null,
+                'password' => $connection['password'] ?? null,
+                'charset' => $connection['charset'] ?? 'utf8',
+                'collation' => $connection['collation'] ?? null,
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'data' => [
+                    'search_path' => $connection['search_path'] ?? 'public',
+                    'sslmode' => $connection['sslmode'] ?? 'prefer',
+                    'engine' => null,
+                    'options' => $connection['options'] ?? [],
+                ],
                 'status' => 'fake',
                 'tables_count' => 3,
-                'options' => [
-                    'note' => '演示用假数据源，实际连接信息待用户配置',
-                    'incremental' => [
-                        'lsn' => '0/0000000',
-                    ],
-                ],
                 'last_scanned_at' => now(),
             ]
         );
 
-        $tables = [
-            [
-                'schema_name' => 'public',
-                'table_name' => 'ncybj_medical_retail_settlement',
-                'table_comment' => '医保定点零售药店刷卡明细（假）',
-                'columns' => [
-                    ['name' => 'jsID', 'type' => 'string', 'comment' => '结算ID'],
-                    ['name' => 'rybh', 'type' => 'string', 'comment' => '人员编号'],
-                    ['name' => 'ryxm', 'type' => 'string', 'comment' => '人员姓名'],
-                    ['name' => 'zjhm', 'type' => 'string', 'comment' => '身份证件号码'],
-                    ['name' => 'jjzfze', 'type' => 'decimal', 'comment' => '基金支付总额'],
-                    ['name' => 'ylfze', 'type' => 'decimal', 'comment' => '医疗费总额'],
-                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间'],
-                ],
-                'columns_count' => 7,
-                'estimated_rows' => 1_200,
-            ],
-            [
-                'schema_name' => 'public',
-                'table_name' => 'ncybj_resident_medical_insurance_basic_info',
-                'table_comment' => '城乡居民医保参保基本信息（假）',
-                'columns' => [
-                    ['name' => 'sfzh', 'type' => 'string', 'comment' => '身份证件号码'],
-                    ['name' => 'xm', 'type' => 'string', 'comment' => '姓名'],
-                    ['name' => 'cbzt', 'type' => 'string', 'comment' => '当前参保状态'],
-                    ['name' => 'cbnd', 'type' => 'integer', 'comment' => '当前缴费年度'],
-                    ['name' => 'jfzje', 'type' => 'decimal', 'comment' => '当前缴费金额'],
-                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间'],
-                ],
-                'columns_count' => 6,
-                'estimated_rows' => 3_500,
-            ],
-            [
-                'schema_name' => 'public',
-                'table_name' => 'szfgjj_housing_provident_fund_deposit_record',
-                'table_comment' => '公积金缴存明细（假）',
-                'columns' => [
-                    ['name' => 'grzh', 'type' => 'string', 'comment' => '个人账号'],
-                    ['name' => 'xingming', 'type' => 'string', 'comment' => '姓名'],
-                    ['name' => 'zjhm', 'type' => 'string', 'comment' => '身份证件号码'],
-                    ['name' => 'jcje', 'type' => 'decimal', 'comment' => '缴存金额'],
-                    ['name' => 'jzrq', 'type' => 'date', 'comment' => '记账日期'],
-                    ['name' => 'swap_data_time', 'type' => 'datetime', 'comment' => '更新时间'],
-                ],
-                'columns_count' => 6,
-                'estimated_rows' => 2_800,
-            ],
-        ];
-
-        $tableModels = [];
-        $columnModels = [];
-
-        foreach ($tables as $table) {
-            $tableModel = DataSourceTable::query()->updateOrCreate(
-                [
-                    'data_source_id' => $dataSource->id,
-                    'schema_name' => $table['schema_name'],
-                    'table_name' => $table['table_name'],
-                ],
-                [
-                    'table_comment' => $table['table_comment'],
-                    'columns_count' => $table['columns_count'],
-                    'estimated_rows' => $table['estimated_rows'],
-                    'last_profiled_at' => now(),
-                ]
-            );
-
-            $tableModels[$table['table_name']] = $tableModel;
-
-            $columnModels[$table['table_name']] = collect($table['columns'])->mapWithKeys(
-                function (array $column, int $index) use ($tableModel) {
-                    $columnModel = DataSourceTableColumn::query()->updateOrCreate(
-                        [
-                            'data_source_table_id' => $tableModel->id,
-                            'name' => $column['name'],
-                        ],
-                        [
-                            'type' => $column['type'],
-                            'comment' => $column['comment'],
-                            'position' => $index + 1,
-                        ]
-                    );
-
-                    return [$column['name'] => $columnModel];
-                }
-            );
-        }
-
+        $schemaName = $dataSource->data['search_path'] ?? 'public';
         $attribute = fn (string $code): ?DimensionAttribute => DimensionAttribute::query()->where('code', $code)->first();
-        $map = function (?string $code, string $tableName, string $column, array $payload = []) use ($attribute, $tableModels, $columnModels): void {
+        $map = function (?string $code, string $tableName, string $column, array $payload = []) use ($attribute, $dataSource, $schemaName): void {
             $attr = $code ? $attribute($code) : null;
-            $table = $tableModels[$tableName] ?? null;
-            $columnModel = $columnModels[$tableName][$column] ?? null;
 
-            if (! $attr || ! $table || ! ($columnModel instanceof DataSourceTableColumn)) {
+            if (! $attr) {
                 return;
             }
 
             DimensionMapping::query()->updateOrCreate(
                 [
                     'dimension_attribute_id' => $attr->id,
-                    'data_source_table_id' => $table->id,
-                    'data_source_table_column_id' => $columnModel->id,
+                    'data_source_id' => $dataSource->id,
+                    'schema_name' => $schemaName,
+                    'table_name' => $tableName,
+                    'column_name' => $column,
                 ],
                 $payload
             );

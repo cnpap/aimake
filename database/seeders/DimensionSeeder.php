@@ -122,10 +122,12 @@ class DimensionSeeder extends Seeder
 
             foreach ($attributes as $index => $attribute) {
                 DimensionAttribute::query()->updateOrCreate(
-                    ['code' => $attribute['code']],
+                    [
+                        'code' => $attribute['code'],
+                        'dimension_id' => $dimension->id,
+                    ],
                     [
                         ...$attribute,
-                        'dimension_id' => $dimension->id,
                         'position' => $attribute['position'] ?? $index + 1,
                     ]
                 );
