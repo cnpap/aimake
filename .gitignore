@@ -28,7 +28,7 @@ yarn-error.log
 /.zed
 
 demo*
-
+docs*
 
 _ide_helper_models.php
 _ide_helper.php

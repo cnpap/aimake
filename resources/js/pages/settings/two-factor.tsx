@@ -19,7 +19,7 @@ interface TwoFactorProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Two-Factor Authentication',
+        title: '双重认证',
         href: show.url(),
     },
 ];
@@ -42,21 +42,20 @@ export default function TwoFactor({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Two-Factor Authentication" />
+            <Head title="双重认证" />
             <SettingsLayout>
                 <div className="space-y-6">
                     <HeadingSmall
-                        title="Two-Factor Authentication"
-                        description="Manage your two-factor authentication settings"
+                        title="双重认证"
+                        description="管理您的双重认证设置"
                     />
                     {twoFactorEnabled ? (
                         <div className="flex flex-col items-start justify-start space-y-4">
-                            <Badge variant="default">Enabled</Badge>
+                            <Badge variant="default">已启用</Badge>
                             <p className="text-muted-foreground">
-                                With two-factor authentication enabled, you will
-                                be prompted for a secure, random pin during
-                                login, which you can retrieve from the
-                                TOTP-supported application on your phone.
+                                启用双重认证后，登录时将提示您输入安全随机 PIN
+                                码，您可以从手机上的 TOTP 应用程序获取该 PIN
+                                码。
                             </p>
 
                             <TwoFactorRecoveryCodes
@@ -73,7 +72,7 @@ export default function TwoFactor({
                                             type="submit"
                                             disabled={processing}
                                         >
-                                            <ShieldBan /> Disable 2FA
+                                            <ShieldBan /> 禁用 2FA
                                         </Button>
                                     )}
                                 </Form>
@@ -81,12 +80,11 @@ export default function TwoFactor({
                         </div>
                     ) : (
                         <div className="flex flex-col items-start justify-start space-y-4">
-                            <Badge variant="destructive">Disabled</Badge>
+                            <Badge variant="destructive">已禁用</Badge>
                             <p className="text-muted-foreground">
-                                When you enable two-factor authentication, you
-                                will be prompted for a secure pin during login.
-                                This pin can be retrieved from a TOTP-supported
-                                application on your phone.
+                                当您启用双重认证时，登录时将提示您输入安全 PIN
+                                码。您可以从手机上的 TOTP 应用程序获取该 PIN
+                                码。
                             </p>
 
                             <div>
@@ -95,7 +93,7 @@ export default function TwoFactor({
                                         onClick={() => setShowSetupModal(true)}
                                     >
                                         <ShieldCheck />
-                                        Continue Setup
+                                        继续设置
                                     </Button>
                                 ) : (
                                     <Form
@@ -110,7 +108,7 @@ export default function TwoFactor({
                                                 disabled={processing}
                                             >
                                                 <ShieldCheck />
-                                                Enable 2FA
+                                                启用 2FA
                                             </Button>
                                         )}
                                     </Form>

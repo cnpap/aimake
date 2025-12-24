@@ -96,7 +96,7 @@ function TwoFactorSetupStep({
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
                         <span className="relative bg-card px-2 py-1">
-                            or, enter the code manually
+                            或者，手动输入代码
                         </span>
                     </div>
 
@@ -201,7 +201,7 @@ function TwoFactorVerificationStep({
                                 onClick={onBack}
                                 disabled={processing}
                             >
-                                Back
+                                返回
                             </Button>
                             <Button
                                 type="submit"
@@ -210,7 +210,7 @@ function TwoFactorVerificationStep({
                                     processing || code.length < OTP_MAX_LENGTH
                                 }
                             >
-                                Confirm
+                                确认
                             </Button>
                         </div>
                     </div>
@@ -253,27 +253,26 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-Factor Authentication Enabled',
+                title: '双重认证已启用',
                 description:
-                    'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-                buttonText: 'Close',
+                    '双重认证现已启用。请使用身份验证器应用扫描二维码或输入设置密钥。',
+                buttonText: '关闭',
             };
         }
 
         if (showVerificationStep) {
             return {
-                title: 'Verify Authentication Code',
-                description:
-                    'Enter the 6-digit code from your authenticator app',
-                buttonText: 'Continue',
+                title: '验证认证码',
+                description: '输入身份验证器应用中的 6 位代码',
+                buttonText: '继续',
             };
         }
 
         return {
-            title: 'Enable Two-Factor Authentication',
+            title: '启用双重认证',
             description:
-                'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-            buttonText: 'Continue',
+                '要完成启用双重认证，请扫描二维码或在身份验证器应用中输入设置密钥',
+            buttonText: '继续',
         };
     }, [twoFactorEnabled, showVerificationStep]);
 
