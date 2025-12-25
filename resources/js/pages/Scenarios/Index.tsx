@@ -132,8 +132,8 @@ export default function ScenariosIndex() {
             <Head title="场景管理" />
 
             <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <SheetContent className="w-full gap-0 p-0 sm:max-w-[400px]">
-                    <SheetHeader className="border-b px-6 py-4">
+                <SheetContent className="flex h-full w-full flex-col gap-0 p-0 sm:max-w-[500px]">
+                    <SheetHeader className="shrink-0 border-b p-6">
                         <SheetTitle className="text-xl font-bold tracking-tight">
                             创建场景
                         </SheetTitle>
@@ -151,14 +151,13 @@ export default function ScenariosIndex() {
                 </SheetContent>
             </Sheet>
 
-            <div className="mx-auto max-w-[1600px] space-y-8 px-6 py-10">
+            <div className="mx-auto max-w-[1600px] px-6">
                 <Tabs
                     defaultValue="all"
                     value={activeTab}
-                    className="space-y-6"
                     onValueChange={setActiveTab}
                 >
-                    <div className="flex flex-col gap-3 border-b pb-6 md:flex-row md:items-center md:justify-between">
+                    <div className="sticky top-0 z-20 -mx-6 flex flex-col gap-3 border-b bg-background/80 px-6 py-6 backdrop-blur-md md:flex-row md:items-center md:justify-between">
                         <TabsList className="h-10 bg-muted/50 p-1">
                             <TabsTrigger
                                 value="all"
@@ -193,8 +192,7 @@ export default function ScenariosIndex() {
                             </div>
                             <Button
                                 onClick={() => setIsCreateOpen(true)}
-                                size="lg"
-                                className="h-11 px-6 font-medium shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                                className="h-10 px-6 font-medium shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 创建场景
                             </Button>
@@ -206,7 +204,7 @@ export default function ScenariosIndex() {
                         variants={containerVariants}
                         initial="hidden"
                         animate="show"
-                        className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
+                        className="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 xl:grid-cols-3"
                     >
                         <AnimatePresence mode="popLayout">
                             {filteredScenarios.map((scenario) => (

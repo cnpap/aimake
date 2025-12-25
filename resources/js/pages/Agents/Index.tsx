@@ -1,21 +1,4 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Sheet,
@@ -24,29 +7,19 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import {
-    Bot,
-    BrainCircuit,
-    MoreHorizontal,
-    Play,
-    Plus,
-    Search,
-    Settings,
-    Sparkles,
-    Terminal,
-} from 'lucide-react';
-
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { AgentCard } from './components/AgentCard';
 import { AgentForm } from './components/agent-form';
 import { AgentFormValues } from './components/agent-form-schema';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: '代理',
+        title: '代理管理',
         href: '/agents',
     },
 ];
@@ -103,8 +76,25 @@ const agents = [
     },
 ];
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+};
+
 export default function AgentsIndex() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('all');
 
     const handleCreateSubmit = (data: AgentFormValues) => {
         console.log('Submitting Agent Config:', data);
@@ -113,6 +103,20 @@ export default function AgentsIndex() {
             setIsCreateOpen(false);
         }, 1000);
     };
+
+    const filteredAgents = agents.filter((agent) => {
+        const matchesSearch =
+            agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            agent.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+        if (activeTab === 'all') return matchesSearch;
+        if (activeTab === 'active')
+            return matchesSearch && agent.status === 'active';
+        if (activeTab === 'maintenance')
+            return matchesSearch && agent.status === 'maintenance';
+
+        return matchesSearch;
+    });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -127,7 +131,7 @@ export default function AgentsIndex() {
                         </SheetDescription>
                     </SheetHeader>
 
-                    <div className="flex-1 overflow-hidden">
+                    <div className="flex-1 overflow-y-auto">
                         <AgentForm
                             onSubmit={handleCreateSubmit}
                             onCancel={() => setIsCreateOpen(false)}
@@ -137,184 +141,77 @@ export default function AgentsIndex() {
                 </SheetContent>
             </Sheet>
 
-            <div className="flex h-full flex-col space-y-8 p-6 lg:p-8">
-                {/* Header Section */}
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent">
-                            代理管理
-                        </h1>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            设计、配置并监控您的 AI 劳动力。
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Button
-                            className="shadow-lg shadow-primary/20"
-                            onClick={() => setIsCreateOpen(true)}
-                        >
-                            <Plus className="mr-2 h-4 w-4" />
-                            创建代理
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Main Content */}
-                <Tabs defaultValue="all" className="space-y-6">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <TabsList>
-                            <TabsTrigger value="all">所有代理</TabsTrigger>
-                            <TabsTrigger value="active">活跃</TabsTrigger>
-                            <TabsTrigger value="archived">已归档</TabsTrigger>
+            <div className="mx-auto max-w-[1600px] px-6">
+                <Tabs
+                    defaultValue="all"
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                >
+                    <div className="sticky top-0 z-20 -mx-6 flex flex-col gap-3 border-b bg-background/80 px-6 py-6 backdrop-blur-md md:flex-row md:items-center md:justify-between">
+                        <TabsList className="h-10 bg-muted/50 p-1">
+                            <TabsTrigger
+                                value="all"
+                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                            >
+                                全部代理
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="active"
+                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                            >
+                                活跃运行中
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="maintenance"
+                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                            >
+                                维护中
+                            </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                        <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
+                            <div className="w-full md:w-72">
                                 <Input
-                                    type="search"
                                     placeholder="搜索代理..."
-                                    className="w-full pl-8 md:w-[200px] lg:w-[300px]"
+                                    value={searchQuery}
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    className="h-10 bg-background transition-all focus:ring-1"
                                 />
                             </div>
+                            <Button
+                                onClick={() => setIsCreateOpen(true)}
+                                className="h-10 px-6 font-medium shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            >
+                                创建代理
+                            </Button>
                         </div>
                     </div>
 
-                    <TabsContent value="all" className="space-y-6">
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                            {agents.map((agent) => (
-                                <Card
+                    <motion.div
+                        key={activeTab}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 xl:grid-cols-3"
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {filteredAgents.map((agent) => (
+                                <motion.div
                                     key={agent.id}
-                                    className="group border-muted/60 py-0! transition-all hover:shadow-md"
+                                    variants={itemVariants}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
                                 >
-                                    <CardHeader className="flex flex-row items-start justify-between space-y-0 pt-4 pb-2">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                                                <Bot className="h-6 w-6" />
-                                            </div>
-                                            <div>
-                                                <CardTitle className="text-base font-semibold">
-                                                    {agent.name}
-                                                </CardTitle>
-                                                <CardDescription className="text-xs">
-                                                    {agent.role}
-                                                </CardDescription>
-                                            </div>
-                                        </div>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="-mr-2 h-8 w-8 text-muted-foreground"
-                                                >
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>
-                                                    操作
-                                                </DropdownMenuLabel>
-                                                <DropdownMenuItem>
-                                                    <Settings className="mr-2 h-4 w-4" />{' '}
-                                                    配置
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <Terminal className="mr-2 h-4 w-4" />{' '}
-                                                    查看日志
-                                                </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-destructive">
-                                                    删除
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </CardHeader>
-                                    <CardContent className="pt-4">
-                                        <p className="mb-4 line-clamp-2 h-10 text-sm text-muted-foreground">
-                                            {agent.description}
-                                        </p>
-
-                                        <div className="mb-4 flex flex-wrap gap-2">
-                                            <Badge
-                                                variant="secondary"
-                                                className="text-xs font-normal"
-                                            >
-                                                <BrainCircuit className="mr-1 h-3 w-3" />
-                                                {agent.type}
-                                            </Badge>
-                                            <Badge
-                                                variant="outline"
-                                                className="text-xs font-normal"
-                                            >
-                                                <Sparkles className="mr-1 h-3 w-3" />
-                                                {agent.model}
-                                            </Badge>
-                                        </div>
-
-                                        <div className="flex flex-col gap-2">
-                                            <div className="text-xs text-muted-foreground">
-                                                <span className="font-medium text-foreground">
-                                                    {agent.tools.length}
-                                                </span>{' '}
-                                                个已启用工具
-                                            </div>
-                                            <div className="flex gap-1">
-                                                {agent.tools
-                                                    .slice(0, 3)
-                                                    .map((tool, i) => (
-                                                        <div
-                                                            key={i}
-                                                            className="rounded border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
-                                                        >
-                                                            {tool}
-                                                        </div>
-                                                    ))}
-                                                {agent.tools.length > 3 && (
-                                                    <div className="rounded border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                                                        +
-                                                        {agent.tools.length - 3}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="flex items-center justify-between border-t bg-muted/20 p-4">
-                                        <div className="flex items-center gap-2">
-                                            <div
-                                                className={`h-2 w-2 rounded-full ${
-                                                    agent.status === 'active'
-                                                        ? 'bg-green-500'
-                                                        : agent.status ===
-                                                            'maintenance'
-                                                          ? 'bg-yellow-500'
-                                                          : 'bg-slate-300'
-                                                }`}
-                                            />
-                                            <span className="text-xs text-muted-foreground capitalize">
-                                                {agent.status === 'active'
-                                                    ? '活跃'
-                                                    : agent.status ===
-                                                        'maintenance'
-                                                      ? '维护中'
-                                                      : '空闲'}
-                                            </span>
-                                        </div>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="h-8 gap-1 hover:bg-primary/10 hover:text-primary"
-                                        >
-                                            <Play className="h-3.5 w-3.5" />
-                                            <span className="text-xs">
-                                                运行
-                                            </span>
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
+                                    <AgentCard agent={agent} />
+                                </motion.div>
                             ))}
-                        </div>
-                    </TabsContent>
+                        </AnimatePresence>
+                    </motion.div>
                 </Tabs>
             </div>
         </AppLayout>

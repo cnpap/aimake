@@ -1,19 +1,19 @@
 import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
-import { AppSidebarHeader } from '@/components/app-sidebar-header';
+// import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren } from 'react';
 
 export default function AppSidebarLayout({
     children,
-    breadcrumbs = [],
+    // breadcrumbs = [],
 }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <div className="flex min-h-svh flex-1 flex-col [--sidebar-header-height:4rem] group-has-data-[collapsible=icon]/sidebar-wrapper:[--sidebar-header-height:3rem]">
-                <AppSidebarHeader breadcrumbs={breadcrumbs} />
+            <div className="flex h-svh flex-1 flex-col [--sidebar-header-height:4rem] group-has-data-[collapsible=icon]/sidebar-wrapper:[--sidebar-header-height:3rem]">
+                {/* <AppSidebarHeader breadcrumbs={breadcrumbs} /> */}
                 <AppContent variant="sidebar" className="overflow-x-hidden">
                     {children}
                 </AppContent>

@@ -58,11 +58,11 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
                     {scenario.description}
                 </p>
 
-                <div className="mt-4 flex flex-wrap gap-1.5">
+                <div className="mt-4 flex flex-wrap gap-2">
                     {scenario.tags.map((tag) => (
                         <span
                             key={tag}
-                            className="inline-flex items-center rounded-[3px] bg-secondary/50 px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground/80 transition-colors hover:bg-secondary/70 hover:text-secondary-foreground"
+                            className="rounded border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
                         >
                             {tag}
                         </span>

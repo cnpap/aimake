@@ -1,3 +1,4 @@
+import { FormActionBar } from '@/components/form-action-bar';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -43,8 +44,12 @@ export function AgentForm({
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="flex h-full flex-col"
             >
-                <Tabs defaultValue="basic" className="flex flex-1 flex-col">
-                    <div className="shrink-0 px-6 pt-4">
+                <Tabs
+                    defaultValue="basic"
+                    className="flex flex-1 flex-col"
+                    activationMode="automatic"
+                >
+                    <div className="shrink-0 px-6 pt-4 pb-3">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="basic">基础信息</TabsTrigger>
                             <TabsTrigger value="model">模型参数</TabsTrigger>
@@ -55,26 +60,38 @@ export function AgentForm({
                         </TabsList>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-6">
-                        <TabsContent value="basic" className="mt-0">
+                    <div className="flex-1 overflow-y-auto px-6">
+                        <TabsContent
+                            value="basic"
+                            className="mt-0 space-y-4 pt-2 pb-8"
+                        >
                             <AgentBasicInfo />
                         </TabsContent>
 
-                        <TabsContent value="model" className="mt-0">
+                        <TabsContent
+                            value="model"
+                            className="mt-0 space-y-4 pt-2 pb-8"
+                        >
                             <AgentModelParams />
                         </TabsContent>
 
-                        <TabsContent value="capabilities" className="mt-0">
+                        <TabsContent
+                            value="capabilities"
+                            className="mt-0 space-y-4 pt-2 pb-8"
+                        >
                             <AgentCapabilities />
                         </TabsContent>
 
-                        <TabsContent value="advanced" className="mt-0">
+                        <TabsContent
+                            value="advanced"
+                            className="mt-0 space-y-4 pt-2 pb-8"
+                        >
                             <AgentAdvancedTemplates />
                         </TabsContent>
                     </div>
                 </Tabs>
 
-                <div className="z-10 flex shrink-0 flex-row items-center justify-end gap-2 border-t bg-background p-6 py-2">
+                <FormActionBar>
                     {onCancel && (
                         <Button
                             variant="outline"
@@ -93,7 +110,7 @@ export function AgentForm({
                         )}
                         {submitLabel}
                     </Button>
-                </div>
+                </FormActionBar>
             </form>
         </Form>
     );

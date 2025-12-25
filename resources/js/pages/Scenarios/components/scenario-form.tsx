@@ -1,3 +1,4 @@
+import { FormActionBar } from '@/components/form-action-bar';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
@@ -61,7 +62,7 @@ export function ScenarioForm({
                 className="flex h-full flex-col"
             >
                 <div className="flex-1 overflow-y-auto px-6">
-                    <div className="space-y-4 py-4">
+                    <div className="space-y-4 pt-4 pb-8">
                         <ScenarioBasicInfo />
                         <Separator />
                         <ScenarioExecutionStrategy />
@@ -69,7 +70,7 @@ export function ScenarioForm({
                     </div>
                 </div>
 
-                <div className="z-10 flex shrink-0 items-center justify-end gap-2 border-t bg-background p-6 py-2">
+                <FormActionBar>
                     {onCancel && (
                         <Button
                             variant="outline"
@@ -88,7 +89,7 @@ export function ScenarioForm({
                         )}
                         {submitLabel}
                     </Button>
-                </div>
+                </FormActionBar>
             </form>
         </Form>
     );
