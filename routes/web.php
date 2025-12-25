@@ -24,6 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Agents/Index');
     })->name('agents.index');
 
+    Route::get('design', function () {
+        return Inertia::render('Design/Index');
+    })->name('design.index');
+
     Route::resource('data-sources', DataSourceController::class);
 });
 
