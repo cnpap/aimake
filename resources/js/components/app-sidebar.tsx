@@ -101,6 +101,11 @@ const data: {
                     icon: LayoutDashboard,
                 },
                 {
+                    title: '场景',
+                    url: '/scenarios',
+                    icon: MapIcon,
+                },
+                {
                     title: '代理人',
                     url: '/agents',
                     icon: Bot,

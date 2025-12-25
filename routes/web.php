@@ -16,6 +16,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+    Route::get('scenarios', function () {
+        return Inertia::render('Scenarios/Index');
+    })->name('scenarios.index');
+
     Route::get('agents', function () {
         return Inertia::render('Agents/Index');
     })->name('agents.index');
