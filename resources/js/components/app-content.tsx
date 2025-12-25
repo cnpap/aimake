@@ -16,11 +16,8 @@ export function AppContent({
     if (variant === 'sidebar') {
         return (
             <SidebarInset
-                style={{
-                    height: 'calc(100svh - var(--sidebar-header-height, 4rem))',
-                    ...style,
-                }}
-                className={cn('overflow-y-auto', className)}
+                style={style}
+                className={cn('min-h-0 flex-1 overflow-y-auto', className)}
                 {...props}
             >
                 {children}

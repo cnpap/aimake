@@ -60,7 +60,7 @@ export function ScenarioForm({
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="flex h-full flex-col"
             >
-                <div className="flex-1 overflow-y-auto p-6">
+                <div className="flex-1 overflow-y-auto px-6">
                     <div className="space-y-6">
                         <ScenarioBasicInfo />
                         <Separator />
@@ -69,7 +69,7 @@ export function ScenarioForm({
                     </div>
                 </div>
 
-                <div className="z-10 flex shrink-0 items-center justify-end gap-2 border-t bg-background p-6">
+                <div className="z-10 flex shrink-0 items-center justify-end gap-2 border-t bg-background p-6 py-2">
                     {onCancel && (
                         <Button
                             variant="outline"

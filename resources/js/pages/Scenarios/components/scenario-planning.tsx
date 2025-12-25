@@ -22,7 +22,7 @@ export function ScenarioPlanning() {
     const planningValue = watch('planning');
 
     return (
-        <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+        <div>
             <FormField
                 control={control}
                 name="planning"

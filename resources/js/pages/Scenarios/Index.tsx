@@ -1,20 +1,4 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Sheet,
@@ -23,102 +7,142 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import {
-    BrainCircuit,
-    Map as MapIcon,
-    MoreHorizontal,
-    Play,
-    Plus,
-    Search,
-    Settings,
-    Tag,
-} from 'lucide-react';
-
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { ScenarioCard } from './components/ScenarioCard';
 import { ScenarioForm } from './components/scenario-form';
 import { ScenarioFormValues } from './components/scenario-form-schema';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: '场景',
+        title: '场景管理',
         href: '/scenarios',
     },
 ];
 
-// Mock Data for Scenarios
+// Enhanced Mock Data (Chinese)
 const scenarios = [
     {
         id: 1,
         name: '市场调研助手',
-        description: '自动搜集并分析特定行业的市场趋势、竞争对手动态。',
+        description: '自动收集和分析特定行业内的市场趋势和竞争对手动态。',
         tags: ['调研', '分析', '报告'],
-        process: 'sequential',
+        process: '顺序执行',
         planning: true,
         manager_llm: null,
         agents_count: 3,
         tasks_count: 5,
-        last_run: '3 小时前',
-        status: 'ready',
+        last_run: '3小时前',
+        status: '就绪',
+        version: 'v1.0.2',
     },
     {
         id: 2,
         name: '代码审计与重构',
         description:
-            '针对 Python 项目进行代码质量分析、安全漏洞扫描及重构建议。',
+            '针对 Python 项目的全面代码质量分析、安全漏洞扫描及重构建议。',
         tags: ['开发', '审计', 'Python'],
-        process: 'hierarchical',
+        process: '层级式',
         planning: false,
-        manager_llm: 'gpt-4-turbo',
+        manager_llm: 'GPT-4 Turbo',
         agents_count: 2,
         tasks_count: 2,
-        last_run: '1 天前',
-        status: 'active',
+        last_run: '1天前',
+        status: '活跃',
+        version: 'v2.1.0',
     },
     {
         id: 3,
         name: '客户邮件自动回复',
-        description: '监控收件箱，分类邮件并草拟回复内容，支持人工审核。',
+        description: '监控收件箱，自动分类并生成回复草稿，支持人工审核循环。',
         tags: ['客服', '邮件', '自动化'],
-        process: 'sequential',
+        process: '顺序执行',
         planning: false,
         manager_llm: null,
         agents_count: 1,
         tasks_count: 2,
-        last_run: '5 分钟前',
-        status: 'ready',
+        last_run: '5分钟前',
+        status: '就绪',
+        version: 'v1.0.0',
+    },
+    {
+        id: 4,
+        name: '数据管道监控',
+        description: '实时监控 ETL 作业，具备异常检测和自动报警机制。',
+        tags: ['数据', '运维', '监控'],
+        process: '顺序执行',
+        planning: true,
+        manager_llm: null,
+        agents_count: 4,
+        tasks_count: 8,
+        last_run: '刚刚',
+        status: '活跃',
+        version: 'v1.2.5',
     },
 ];
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+        },
+    },
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+};
+
 export default function ScenariosIndex() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('all');
 
     const handleCreateSubmit = (data: ScenarioFormValues) => {
-        console.log('Submitting Scenario Config:', data);
-        // Simulate API call
+        console.log('提交场景配置:', data);
         setTimeout(() => {
             setIsCreateOpen(false);
         }, 1000);
     };
+
+    const filteredScenarios = scenarios.filter((scenario) => {
+        const matchesSearch =
+            scenario.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            scenario.description
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+
+        if (activeTab === 'all') return matchesSearch;
+        if (activeTab === 'active')
+            return matchesSearch && scenario.status === '活跃';
+        if (activeTab === 'planning') return matchesSearch && scenario.planning;
+
+        return matchesSearch;
+    });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="场景管理" />
 
             <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <SheetContent className="flex h-full w-full flex-col gap-0 p-0 sm:max-w-[600px]">
-                    <SheetHeader className="shrink-0 border-b p-6">
-                        <SheetTitle>创建新场景 (Scenario)</SheetTitle>
-                        <SheetDescription>
-                            定义一个新的 AI 调试场景。场景是 Agents 和 Tasks
-                            的编排容器。
+                <SheetContent className="w-full p-0 sm:max-w-[400px]">
+                    <SheetHeader className="border-b px-6 py-4">
+                        <SheetTitle className="text-xl font-bold tracking-tight">
+                            创建场景
+                        </SheetTitle>
+                        <SheetDescription className="text-muted-foreground">
+                            配置新的 AI 调试场景。场景作为 Agent
+                            和任务的编排容器。
                         </SheetDescription>
                     </SheetHeader>
-
-                    <div className="flex-1 overflow-hidden">
+                    <div className="flex-1 overflow-y-auto">
                         <ScenarioForm
                             onSubmit={handleCreateSubmit}
                             onCancel={() => setIsCreateOpen(false)}
@@ -128,163 +152,79 @@ export default function ScenariosIndex() {
                 </SheetContent>
             </Sheet>
 
-            <div className="flex h-full flex-col space-y-8 p-6 lg:p-8">
-                {/* Header Section */}
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <h1 className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent">
-                            场景管理 (Scenarios)
-                        </h1>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            创建并管理 AI 调试场景，编排 Agent 与 Task。
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Button
-                            className="shadow-lg shadow-primary/20"
-                            onClick={() => setIsCreateOpen(true)}
-                        >
-                            <Plus className="mr-2 h-4 w-4" />
-                            创建场景
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Main Content */}
-                <Tabs defaultValue="all" className="space-y-6">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <TabsList>
-                            <TabsTrigger value="all">所有场景</TabsTrigger>
-                            <TabsTrigger value="active">最近运行</TabsTrigger>
-                            <TabsTrigger value="favorites">收藏</TabsTrigger>
+            <div className="mx-auto max-w-[1600px] space-y-8 px-6 py-10">
+                <Tabs
+                    defaultValue="all"
+                    value={activeTab}
+                    className="space-y-6"
+                    onValueChange={setActiveTab}
+                >
+                    <div className="flex flex-col gap-3 border-b pb-6 md:flex-row md:items-center md:justify-between">
+                        <TabsList className="h-10 bg-muted/50 p-1">
+                            <TabsTrigger
+                                value="all"
+                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                            >
+                                全部场景
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="active"
+                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                            >
+                                活跃运行中
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="planning"
+                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                            >
+                                规划模式
+                            </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                        <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
+                            <div className="w-full md:w-72">
                                 <Input
-                                    type="search"
-                                    placeholder="搜索场景..."
-                                    className="w-full pl-8 md:w-[200px] lg:w-[300px]"
+                                    placeholder="筛选场景..."
+                                    value={searchQuery}
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    className="h-10 bg-background transition-all focus:ring-1"
                                 />
                             </div>
+                            <Button
+                                onClick={() => setIsCreateOpen(true)}
+                                size="lg"
+                                className="h-11 px-6 font-medium shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                            >
+                                创建场景
+                            </Button>
                         </div>
                     </div>
 
-                    <TabsContent value="all" className="space-y-6">
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                            {scenarios.map((scenario) => (
-                                <Card
+                    <motion.div
+                        key={activeTab}
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {filteredScenarios.map((scenario) => (
+                                <motion.div
                                     key={scenario.id}
-                                    className="group border-muted/60 transition-all hover:shadow-md"
+                                    variants={itemVariants}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
                                 >
-                                    <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                                                <MapIcon className="h-6 w-6" />
-                                            </div>
-                                            <div>
-                                                <CardTitle className="text-base font-semibold">
-                                                    {scenario.name}
-                                                </CardTitle>
-                                                <div className="mt-1 flex items-center gap-2">
-                                                    <Badge
-                                                        variant="secondary"
-                                                        className="h-5 px-1.5 text-[10px] font-normal"
-                                                    >
-                                                        {scenario.process ===
-                                                        'sequential'
-                                                            ? '顺序执行'
-                                                            : '层级执行'}
-                                                    </Badge>
-                                                    {scenario.planning && (
-                                                        <Badge
-                                                            variant="outline"
-                                                            className="h-5 border-amber-200 bg-amber-50 px-1.5 text-[10px] font-normal text-amber-700"
-                                                        >
-                                                            <BrainCircuit className="mr-1 h-3 w-3" />
-                                                            Planning
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="-mr-2 h-8 w-8 text-muted-foreground"
-                                                >
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>
-                                                    操作
-                                                </DropdownMenuLabel>
-                                                <DropdownMenuItem>
-                                                    <Settings className="mr-2 h-4 w-4" />{' '}
-                                                    编排 Agents
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <Play className="mr-2 h-4 w-4" />{' '}
-                                                    运行调试
-                                                </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-destructive">
-                                                    删除
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </CardHeader>
-                                    <CardContent className="pt-4">
-                                        <p className="mb-4 line-clamp-2 h-10 text-sm text-muted-foreground">
-                                            {scenario.description}
-                                        </p>
-
-                                        <div className="mb-4 flex flex-wrap gap-2">
-                                            {scenario.tags.map((tag, i) => (
-                                                <div
-                                                    key={i}
-                                                    className="flex items-center rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"
-                                                >
-                                                    <Tag className="mr-1 h-3 w-3" />
-                                                    {tag}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="flex items-center justify-between border-t bg-muted/20 p-4">
-                                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                            <div className="flex items-center gap-1">
-                                                <span className="font-medium text-foreground">
-                                                    {scenario.agents_count}
-                                                </span>{' '}
-                                                Agents
-                                            </div>
-                                            <div className="flex items-center gap-1">
-                                                <span className="font-medium text-foreground">
-                                                    {scenario.tasks_count}
-                                                </span>{' '}
-                                                Tasks
-                                            </div>
-                                        </div>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="h-8 gap-1 hover:bg-primary/10 hover:text-primary"
-                                        >
-                                            <Play className="h-3.5 w-3.5" />
-                                            <span className="text-xs">
-                                                进入场景
-                                            </span>
-                                        </Button>
-                                    </CardFooter>
-                                </Card>
+                                    <ScenarioCard scenario={scenario} />
+                                </motion.div>
                             ))}
-                        </div>
-                    </TabsContent>
+                        </AnimatePresence>
+                    </motion.div>
                 </Tabs>
             </div>
         </AppLayout>

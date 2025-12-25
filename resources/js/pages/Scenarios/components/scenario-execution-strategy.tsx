@@ -26,7 +26,7 @@ export function ScenarioExecutionStrategy() {
                 执行策略
             </h3>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
                 <FormField
                     control={control}
                     name="process"

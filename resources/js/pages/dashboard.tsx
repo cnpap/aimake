@@ -15,14 +15,7 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
-import {
-    Activity,
-    Database,
-    GitBranch,
-    Plus,
-    RefreshCw,
-    ShieldCheck,
-} from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -76,7 +69,6 @@ export default function Dashboard() {
                     <StatCard
                         title="数据资产总数"
                         value="2,854"
-                        icon={Database}
                         trend={{
                             value: 12.5,
                             isPositive: true,
@@ -87,7 +79,6 @@ export default function Dashboard() {
                     <StatCard
                         title="血缘覆盖率"
                         value="94%"
-                        icon={GitBranch}
                         trend={{
                             value: 2.1,
                             isPositive: true,
@@ -98,7 +89,6 @@ export default function Dashboard() {
                     <StatCard
                         title="数据质量评分"
                         value="88.5"
-                        icon={ShieldCheck}
                         trend={{
                             value: 0.4,
                             isPositive: false,
@@ -109,7 +99,6 @@ export default function Dashboard() {
                     <StatCard
                         title="活跃 AI 模型"
                         value="42"
-                        icon={Activity}
                         trend={{ value: 4, isPositive: true, label: '较上月' }}
                         description="生产环境运行中"
                     />
