@@ -16,6 +16,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+    Route::get('agents', function () {
+        return Inertia::render('Agents/Index');
+    })->name('agents.index');
+
     Route::resource('data-sources', DataSourceController::class);
 });
 
