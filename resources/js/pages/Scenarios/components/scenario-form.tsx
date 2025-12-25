@@ -61,7 +61,7 @@ export function ScenarioForm({
                 className="flex h-full flex-col"
             >
                 <div className="flex-1 overflow-y-auto px-6">
-                    <div className="space-y-6">
+                    <div className="space-y-4 py-4">
                         <ScenarioBasicInfo />
                         <Separator />
                         <ScenarioExecutionStrategy />

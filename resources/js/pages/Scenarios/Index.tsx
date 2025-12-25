@@ -132,14 +132,13 @@ export default function ScenariosIndex() {
             <Head title="场景管理" />
 
             <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <SheetContent className="w-full p-0 sm:max-w-[400px]">
+                <SheetContent className="w-full gap-0 p-0 sm:max-w-[400px]">
                     <SheetHeader className="border-b px-6 py-4">
                         <SheetTitle className="text-xl font-bold tracking-tight">
                             创建场景
                         </SheetTitle>
                         <SheetDescription className="text-muted-foreground">
-                            配置新的 AI 调试场景。场景作为 Agent
-                            和任务的编排容器。
+                            场景作为 Agent 和任务的编排容器。
                         </SheetDescription>
                     </SheetHeader>
                     <div className="flex-1 overflow-y-auto">

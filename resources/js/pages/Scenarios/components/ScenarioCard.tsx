@@ -42,12 +42,10 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
                     </p>
                 </div>
                 <Badge
-                    variant={
-                        scenario.status === '活跃' ? 'default' : 'secondary'
-                    }
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                    variant="outline"
+                    className={`rounded-sm border-0 px-2 py-0.5 text-[10px] font-medium shadow-none ${
                         scenario.status === '活跃'
-                            ? 'bg-primary/10 text-primary hover:bg-primary/20'
+                            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                             : 'bg-muted text-muted-foreground hover:bg-muted/80'
                     }`}
                 >
@@ -64,7 +62,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
                     {scenario.tags.map((tag) => (
                         <span
                             key={tag}
-                            className="inline-flex items-center rounded-md border bg-background px-2 py-0.5 text-[10px] font-medium text-muted-foreground transition-colors"
+                            className="inline-flex items-center rounded-[3px] bg-secondary/50 px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground/80 transition-colors hover:bg-secondary/70 hover:text-secondary-foreground"
                         >
                             {tag}
                         </span>
@@ -74,12 +72,12 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
 
             <CardFooter className="flex items-center justify-between border-t bg-muted/10 p-4">
                 <div className="flex gap-4 text-xs font-medium text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                        <span className="block h-1.5 w-1.5 rounded-full bg-primary/40" />
+                    <div className="flex items-center gap-2">
+                        <span className="block h-2 w-2 rounded-[2px] bg-primary/80" />
                         {scenario.agents_count} Agents
                     </div>
-                    <div className="flex items-center gap-1.5">
-                        <span className="block h-1.5 w-1.5 rounded-full bg-primary/40" />
+                    <div className="flex items-center gap-2">
+                        <span className="block h-2 w-2 rounded-[2px] bg-primary/80" />
                         {scenario.tasks_count} 任务
                     </div>
                 </div>
