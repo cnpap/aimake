@@ -8,6 +8,7 @@ import DatabaseStatus from './partials/advanced/database-status';
 import StatCards from './partials/advanced/stat-cards';
 import Buttons from './partials/basic/buttons';
 import Colors from './partials/basic/colors';
+import MultiSelectDemo from './partials/basic/multi-select-demo';
 import Typography from './partials/basic/typography';
 import DataPipelines from './partials/scenario/data-pipelines';
 
@@ -77,6 +78,7 @@ export default function DesignIndex() {
                         className="animate-in space-y-12 duration-500 fade-in-50"
                     >
                         <Buttons />
+                        <MultiSelectDemo />
                         <Colors />
                         <Typography />
                     </TabsContent>
