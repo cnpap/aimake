@@ -1,28 +1,12 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CardPage } from '@/components/card-page';
+import { FormSheetModal } from '@/components/form-sheet-modal';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import NiceModal from '@ebay/nice-modal-react';
 import { Head } from '@inertiajs/react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { AgentCard } from './components/AgentCard';
 import { AgentForm } from './components/agent-form';
 import { AgentFormValues } from './components/agent-form-schema';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: '代理管理',
-        href: '/agents',
-    },
-];
 
 // Mock Data
 const agents = [
@@ -76,33 +60,32 @@ const agents = [
     },
 ];
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-};
-
 export default function AgentsIndex() {
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
 
-    const handleCreateSubmit = (data: AgentFormValues) => {
+    const handleCreateSubmit = (data: AgentFormValues, close: () => void) => {
         console.log('Submitting Agent Config:', data);
         // Simulate API call
         setTimeout(() => {
-            setIsCreateOpen(false);
+            close();
         }, 1000);
     };
+
+    const openCreateModal = () =>
+        NiceModal.show(FormSheetModal, {
+            title: '配置代理 (Agent)',
+            description: '配置 CrewAI Agent 的核心参数、模型策略及执行能力。',
+            children: (close) => (
+                <AgentForm
+                    onSubmit={(agentData) =>
+                        handleCreateSubmit(agentData, close)
+                    }
+                    onCancel={close}
+                    submitLabel="创建代理"
+                />
+            ),
+        });
 
     const filteredAgents = agents.filter((agent) => {
         const matchesSearch =
@@ -119,101 +102,27 @@ export default function AgentsIndex() {
     });
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="代理管理" />
 
-            <Sheet open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <SheetContent className="flex h-full w-full flex-col gap-0 p-0 sm:max-w-[500px]">
-                    <SheetHeader className="shrink-0 border-b p-6">
-                        <SheetTitle>配置代理 (Agent)</SheetTitle>
-                        <SheetDescription>
-                            配置 CrewAI Agent 的核心参数、模型策略及执行能力。
-                        </SheetDescription>
-                    </SheetHeader>
-
-                    <div className="flex-1 overflow-y-auto">
-                        <AgentForm
-                            onSubmit={handleCreateSubmit}
-                            onCancel={() => setIsCreateOpen(false)}
-                            submitLabel="创建代理"
-                        />
-                    </div>
-                </SheetContent>
-            </Sheet>
-
-            <div className="mx-auto max-w-[1600px] px-6">
-                <Tabs
-                    defaultValue="all"
-                    value={activeTab}
-                    onValueChange={setActiveTab}
-                >
-                    <div className="sticky top-0 z-20 -mx-6 flex flex-col gap-3 border-b bg-background/80 px-6 py-6 backdrop-blur-md md:flex-row md:items-center md:justify-between">
-                        <TabsList className="h-10 bg-muted/50 p-1">
-                            <TabsTrigger
-                                value="all"
-                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                            >
-                                全部代理
-                            </TabsTrigger>
-                            <TabsTrigger
-                                value="active"
-                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                            >
-                                活跃运行中
-                            </TabsTrigger>
-                            <TabsTrigger
-                                value="maintenance"
-                                className="h-full px-4 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                            >
-                                维护中
-                            </TabsTrigger>
-                        </TabsList>
-
-                        <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
-                            <div className="w-full md:w-72">
-                                <Input
-                                    placeholder="搜索代理..."
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                        setSearchQuery(e.target.value)
-                                    }
-                                    className="h-10 bg-background transition-all focus:ring-1"
-                                />
-                            </div>
-                            <Button
-                                onClick={() => setIsCreateOpen(true)}
-                                className="h-10 px-6 font-medium shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
-                            >
-                                创建代理
-                            </Button>
-                        </div>
-                    </div>
-
-                    <motion.div
-                        key={activeTab}
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="show"
-                        className="grid grid-cols-1 gap-6 py-4 md:grid-cols-2 xl:grid-cols-3"
-                    >
-                        <AnimatePresence mode="popLayout">
-                            {filteredAgents.map((agent) => (
-                                <motion.div
-                                    key={agent.id}
-                                    variants={itemVariants}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    <AgentCard agent={agent} />
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
-                    </motion.div>
-                </Tabs>
-            </div>
+            <CardPage
+                tabs={[
+                    { value: 'all', label: '全部代理' },
+                    { value: 'active', label: '活跃运行中' },
+                    { value: 'maintenance', label: '维护中' },
+                ]}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                searchPlaceholder="搜索代理..."
+                searchValue={searchQuery}
+                onSearchChange={setSearchQuery}
+                ctaLabel="创建代理"
+                onCtaClick={openCreateModal}
+                items={filteredAgents}
+                renderItem={(agent) => <AgentCard agent={agent} />}
+                getKey={(agent) => agent.id}
+                emptyText="暂无符合条件的代理"
+            />
         </AppLayout>
     );
 }
