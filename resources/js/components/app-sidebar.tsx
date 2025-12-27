@@ -21,6 +21,9 @@ import {
     SidebarRail,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import agents from '@/routes/agents';
+import scenarios from '@/routes/scenarios';
+import tools from '@/routes/tools';
 import { Link, usePage } from '@inertiajs/react';
 import {
     Bot,
@@ -102,12 +105,17 @@ const data: {
                 },
                 {
                     title: '场景',
-                    url: '/scenarios',
+                    url: scenarios.index.url(),
                     icon: MapIcon,
                 },
                 {
+                    title: '工具',
+                    url: tools.index.url(),
+                    icon: Server,
+                },
+                {
                     title: '代理人',
-                    url: '/agents',
+                    url: agents.index.url(),
                     icon: Bot,
                 },
                 {
@@ -119,11 +127,6 @@ const data: {
                     title: '训练',
                     url: '/training',
                     icon: Brain,
-                },
-                {
-                    title: 'MCP 服务',
-                    url: '/mcp',
-                    icon: Server,
                 },
             ],
         },
