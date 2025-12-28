@@ -109,7 +109,7 @@ const data: {
                     icon: MapIcon,
                 },
                 {
-                    title: '工具',
+                    title: '工具集',
                     url: tools.index.url(),
                     icon: Server,
                 },

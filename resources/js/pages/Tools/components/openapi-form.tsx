@@ -8,8 +8,16 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { useWatch } from 'react-hook-form';
 import {
     defaultOpenApiFormValues,
     openApiToolSchema,
@@ -34,6 +42,12 @@ export function OpenApiForm({
         defaultValues: { ...defaultOpenApiFormValues, ...defaultValues },
     });
 
+    const toolType =
+        useWatch({
+            control: form.control,
+            name: 'type',
+        }) ?? defaultOpenApiFormValues.type;
+
     return (
         <FormShell
             id="openapi-form"
@@ -47,6 +61,36 @@ export function OpenApiForm({
                     <h3 className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
                         基础信息
                     </h3>
+
+                    <FormField
+                        control={form.control}
+                        name="type"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>工具类型</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={toolType}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="选择工具类型" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="openapi">
+                                            OpenAPI
+                                        </SelectItem>
+                                        <SelectItem value="serverless">
+                                            Serverless (Deno)
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <FormField
                             control={form.control}
@@ -102,53 +146,59 @@ export function OpenApiForm({
                     />
                 </div>
 
-                <Separator />
+                {toolType === 'openapi' && (
+                    <>
+                        <Separator />
 
-                <div className="space-y-4">
-                    <h3 className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
-                        连接配置
-                    </h3>
-                    <FormField
-                        control={form.control}
-                        name="baseUrl"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Base URL</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="例如：https://api.example.com"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    OpenAPI 文档中 servers 的基础域名
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
+                                连接配置
+                            </h3>
+                            <FormField
+                                control={form.control}
+                                name="baseUrl"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Base URL</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="例如：https://api.example.com"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            OpenAPI 文档中 servers 的基础域名
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <FormField
-                        control={form.control}
-                        name="token"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Bearer Token（可选）</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="填写后会在调用时携带 Authorization: Bearer <token>"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    留空表示无需鉴权；填写后将自动使用 Bearer
-                                    Token 调用
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                            <FormField
+                                control={form.control}
+                                name="token"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Bearer Token（可选）
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="填写后会在调用时携带 Authorization: Bearer <token>"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            留空表示无需鉴权；填写后将自动使用
+                                            Bearer Token 调用
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
         </FormShell>
     );

@@ -16,35 +16,36 @@ import {
     Users,
 } from 'lucide-react';
 
-export type OpenApiToolStatus = 'active' | 'draft' | 'deprecated';
+export type ToolStatus = 'active' | 'draft' | 'deprecated';
 
-export interface OpenApiTool {
+export interface Tool {
     id: number;
     name: string;
+    type: 'openapi' | 'serverless';
     version: string;
     description: string;
-    baseUrl: string;
+    baseUrl?: string;
     operations: number;
     owner: string;
-    status: OpenApiToolStatus;
+    status: ToolStatus;
     lastSync: string;
     boundAgents: string[];
     tokenConfigured: boolean;
     tags: string[];
 }
 
-interface OpenApiToolCardProps {
-    tool: OpenApiTool;
+interface ToolCardProps {
+    tool: Tool;
 }
 
-const statusStyleMap: Record<OpenApiToolStatus, string> = {
+const statusStyleMap: Record<ToolStatus, string> = {
     active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200',
     draft: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
     deprecated:
         'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
 };
 
-export function OpenApiToolCard({ tool }: OpenApiToolCardProps) {
+export function ToolCard({ tool }: ToolCardProps) {
     return (
         <Card className="group relative flex h-full flex-col overflow-hidden border bg-card/50 py-0 text-card-foreground transition-all hover:border-primary/50 hover:bg-card hover:shadow-md">
             <CardHeader className="flex flex-row items-start justify-between space-y-0 p-5 pb-0">
@@ -91,16 +92,18 @@ export function OpenApiToolCard({ tool }: OpenApiToolCardProps) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-2.5 py-2">
-                        <ShieldCheck className="h-3.5 w-3.5 text-primary/70" />
-                        <div>
-                            <div className="text-xs font-medium text-foreground">
-                                {tool.tokenConfigured
-                                    ? '已配置密钥'
-                                    : '未配置密钥'}
+                    {tool.type === 'openapi' && (
+                        <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-2.5 py-2">
+                            <ShieldCheck className="h-3.5 w-3.5 text-primary/70" />
+                            <div>
+                                <div className="text-xs font-medium text-foreground">
+                                    {tool.tokenConfigured
+                                        ? '已配置密钥'
+                                        : '未配置密钥'}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                     <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-2.5 py-2">
                         <Users className="h-3.5 w-3.5 text-primary/70" />
                         <div>
@@ -120,19 +123,21 @@ export function OpenApiToolCard({ tool }: OpenApiToolCardProps) {
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                    <Badge
-                        variant="outline"
-                        className="rounded border bg-muted/50 px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground"
-                    >
-                        <Globe2 className="mr-1 h-3 w-3" />
-                        {tool.baseUrl}
-                    </Badge>
+                    {tool.baseUrl && (
+                        <Badge
+                            variant="outline"
+                            className="rounded border bg-muted/50 px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground"
+                        >
+                            <Globe2 className="mr-1 h-3 w-3" />
+                            {tool.baseUrl}
+                        </Badge>
+                    )}
                     <Badge
                         variant="outline"
                         className="rounded border bg-muted/50 px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground"
                     >
                         <Code className="mr-1 h-3 w-3" />
-                        OpenAPI
+                        {tool.type === 'openapi' ? 'OpenAPI' : 'Serverless'}
                     </Badge>
                 </div>
             </CardContent>
