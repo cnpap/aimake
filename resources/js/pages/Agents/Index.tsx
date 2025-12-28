@@ -1,12 +1,9 @@
 import { CardPage } from '@/components/card-page';
-import { FormSheetModal } from '@/components/form-sheet-modal';
 import AppLayout from '@/layouts/app-layout';
-import NiceModal from '@ebay/nice-modal-react';
-import { Head } from '@inertiajs/react';
+import { create } from '@/routes/agents';
+import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { AgentCard } from './components/AgentCard';
-import { AgentForm } from './components/agent-form';
-import { AgentFormValues } from './components/agent-form-schema';
 
 // Mock Data
 const agents = [
@@ -64,29 +61,6 @@ export default function AgentsIndex() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
 
-    const handleCreateSubmit = (data: AgentFormValues, close: () => void) => {
-        console.log('Submitting Agent Config:', data);
-        // Simulate API call
-        setTimeout(() => {
-            close();
-        }, 1000);
-    };
-
-    const openCreateModal = () =>
-        NiceModal.show(FormSheetModal, {
-            title: '配置代理 (Agent)',
-            description: '配置 CrewAI Agent 的核心参数、模型策略及执行能力。',
-            children: (close) => (
-                <AgentForm
-                    onSubmit={(agentData) =>
-                        handleCreateSubmit(agentData, close)
-                    }
-                    onCancel={close}
-                    submitLabel="创建代理"
-                />
-            ),
-        });
-
     const filteredAgents = agents.filter((agent) => {
         const matchesSearch =
             agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -117,7 +91,7 @@ export default function AgentsIndex() {
                 searchValue={searchQuery}
                 onSearchChange={setSearchQuery}
                 ctaLabel="创建代理"
-                onCtaClick={openCreateModal}
+                onCtaClick={() => router.visit(create.url())}
                 items={filteredAgents}
                 renderItem={(agent) => <AgentCard agent={agent} />}
                 getKey={(agent) => agent.id}

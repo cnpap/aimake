@@ -100,7 +100,7 @@ export function AgentCapabilities() {
                                 推理模式
                             </FormLabel>
                             <FormDescription>
-                                强制 Agent 在行动前进行规划。
+                                在行动前进行规划。
                             </FormDescription>
                         </div>
                         <FormControl>

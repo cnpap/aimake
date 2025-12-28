@@ -24,6 +24,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Agents/Index');
     })->name('agents.index');
 
+    Route::get('agents/create', function () {
+        return Inertia::render('Agents/Create');
+    })->name('agents.create');
+
+    Route::post('agents', function () {
+        sleep(1); // Simulate network delay
+
+        return redirect()->route('agents.index');
+    })->name('agents.store');
+
     Route::get('tools', function () {
         return Inertia::render('Tools/Index');
     })->name('tools.index');
