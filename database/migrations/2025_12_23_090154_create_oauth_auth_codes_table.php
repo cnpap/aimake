@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_auth_codes', function (Blueprint $table) {
-            $table->char('id', 80)->primary();
-            $table->foreignId('user_id')->index();
-            $table->foreignUuid('client_id');
-            $table->text('scopes')->nullable();
-            $table->boolean('revoked');
-            $table->dateTime('expires_at')->nullable();
+            $table->char('id', 80)->primary()->comment('授权码唯一标识');
+            $table->foreignId('user_id')->index()->comment('用户 ID');
+            $table->foreignUuid('client_id')->comment('客户端 ID');
+            $table->text('scopes')->nullable()->comment('授权范围');
+            $table->boolean('revoked')->comment('是否已吊销');
+            $table->dateTime('expires_at')->nullable()->comment('过期时间');
         });
     }
 

@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_refresh_tokens', function (Blueprint $table) {
-            $table->char('id', 80)->primary();
-            $table->char('access_token_id', 80)->index();
-            $table->boolean('revoked');
-            $table->dateTime('expires_at')->nullable();
+            $table->char('id', 80)->primary()->comment('刷新令牌 ID');
+            $table->char('access_token_id', 80)->index()->comment('关联访问令牌 ID');
+            $table->boolean('revoked')->comment('是否已吊销');
+            $table->dateTime('expires_at')->nullable()->comment('过期时间');
         });
     }
 

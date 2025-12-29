@@ -12,15 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('oauth_clients', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->nullableMorphs('owner');
-            $table->string('name');
-            $table->string('secret')->nullable();
-            $table->string('provider')->nullable();
-            $table->text('redirect_uris');
-            $table->text('grant_types');
-            $table->boolean('revoked');
-            $table->timestamps();
+            $table->uuid('id')->primary()->comment('客户端 ID');
+            $table->string('owner_type')->nullable()->comment('客户端归属模型类型');
+            $table->unsignedBigInteger('owner_id')->nullable()->comment('客户端归属模型 ID');
+            $table->index(['owner_type', 'owner_id']);
+            $table->string('name')->comment('客户端名称');
+            $table->string('secret')->nullable()->comment('客户端密钥');
+            $table->string('provider')->nullable()->comment('认证用户提供者');
+            $table->text('redirect_uris')->comment('回调地址列表');
+            $table->text('grant_types')->comment('允许的授权类型');
+            $table->boolean('revoked')->comment('是否已吊销');
+            $table->timestamp('created_at')->nullable()->comment('创建时间');
+            $table->timestamp('updated_at')->nullable()->comment('更新时间');
         });
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GithubController;
 use App\Http\Controllers\DataSourceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -10,6 +11,9 @@ Route::get('/', function () {
         'canRegister' => Features::enabled(Features::registration()),
     ]);
 })->name('home');
+
+Route::get('auth/github/redirect', [GithubController::class, 'redirect'])->name('github.redirect');
+Route::get('auth/github/callback', [GithubController::class, 'callback'])->name('github.callback');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
