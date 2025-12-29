@@ -9,6 +9,14 @@ import { initializeTheme } from './hooks/use-appearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+if (import.meta.env.DEV) {
+    // Dynamically import the vtjump-react19-client only in development, ignore type checking errors if module is missing.
+    // @ts-expect-error - ignore type checking errors if module is missing.
+    import('virtual:vtjump-react19-client').catch(() => {
+        // Optional: fail silently if the module does not exist in dev.
+    });
+}
+
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     resolve: (name) =>
