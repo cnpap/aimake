@@ -38,6 +38,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Tools/Index');
     })->name('tools.index');
 
+    Route::get('tools/docs', function () {
+        return Inertia::render('Tools/Docs', [
+            'specUrl' => request('specUrl'),
+            'name' => request('name'),
+            'version' => request('version'),
+            'baseUrl' => request('baseUrl'),
+        ]);
+    })->name('tools.docs');
+
     Route::get('design', function () {
         return Inertia::render('Design/Index');
     })->name('design.index');

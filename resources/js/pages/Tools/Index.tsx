@@ -12,7 +12,6 @@ const tools: Tool[] = [
     {
         id: 1,
         name: '客户支持 API',
-        type: 'openapi',
         version: 'v1.2.0',
         description:
             '统一客服渠道的工单、会话、知识库接口，支持多轮跟进与满意度回传，已通过安全扫描。',
@@ -24,11 +23,11 @@ const tools: Tool[] = [
         boundAgents: ['客户支持', '知识助手'],
         tokenConfigured: true,
         tags: ['客服', '工单', '知识库'],
+        openapiUrl: 'https://petstore3.swagger.io/api/v3/openapi.json',
     },
     {
         id: 2,
         name: '数据资产目录 API',
-        type: 'openapi',
         version: '2024.12',
         description:
             '提供数据集、字段血缘、分区和采样查询能力，面向数据分析与治理的开放接口。',
@@ -40,11 +39,11 @@ const tools: Tool[] = [
         boundAgents: ['数据分析师', '代码审查员'],
         tokenConfigured: true,
         tags: ['数据源', '血缘', '治理'],
+        openapiUrl: 'https://petstore3.swagger.io/api/v3/openapi.json',
     },
     {
         id: 3,
         name: '供应链 OpenAPI',
-        type: 'openapi',
         version: 'v2-beta',
         description:
             '覆盖采购、库存、物流跟踪的接口集合，当前处于 beta 联调阶段，需提前申请配额。',
@@ -56,11 +55,11 @@ const tools: Tool[] = [
         boundAgents: ['研究助手'],
         tokenConfigured: false,
         tags: ['供应链', '物流', 'beta'],
+        openapiUrl: 'https://petstore3.swagger.io/api/v3/openapi.json',
     },
     {
         id: 4,
         name: '旧版计费 API',
-        type: 'openapi',
         version: 'v1',
         description: '已迁移到新版计费中心，仅保留查询功能，计划 Q2 完全下线。',
         baseUrl: 'https://billing.legacy.acme.com',
@@ -71,6 +70,7 @@ const tools: Tool[] = [
         boundAgents: [],
         tokenConfigured: false,
         tags: ['计费', 'legacy'],
+        openapiUrl: 'https://petstore3.swagger.io/api/v3/openapi.json',
     },
 ];
 
@@ -78,8 +78,15 @@ export default function ToolsIndex() {
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState<'all' | Tool['status']>('all');
 
-    const handleCreateSubmit = (data: OpenApiFormValues, close: () => void) => {
-        console.log('Registering tool:', data);
+    const handleFormSubmit = (
+        data: OpenApiFormValues,
+        close: () => void,
+        mode: 'create' | 'update',
+    ) => {
+        console.log(
+            `${mode === 'create' ? 'Registering' : 'Updating'} tool:`,
+            data,
+        );
         setTimeout(() => {
             close();
         }, 800);
@@ -91,12 +98,57 @@ export default function ToolsIndex() {
             description: '录入工具集信息，让 Agent 可以安全调用。',
             children: (close) => (
                 <OpenApiForm
-                    onSubmit={(payload) => handleCreateSubmit(payload, close)}
+                    onSubmit={(payload) =>
+                        handleFormSubmit(payload, close, 'create')
+                    }
                     onCancel={close}
                     submitLabel="注册工具"
                 />
             ),
         });
+
+    const openEditModal = (tool: Tool) =>
+        NiceModal.show(FormSheetModal, {
+            title: '编辑工具集',
+            description: '更新基础信息、Base URL 或密钥配置。',
+            children: (close) => (
+                <OpenApiForm
+                    defaultValues={{
+                        name: tool.name,
+                        version: tool.version,
+                        baseUrl: tool.baseUrl,
+                        description: tool.description,
+                    }}
+                    onSubmit={(payload) =>
+                        handleFormSubmit(payload, close, 'update')
+                    }
+                    onCancel={close}
+                    submitLabel="保存更新"
+                />
+            ),
+        });
+
+    const handleViewDocs = (tool: Tool) => {
+        const specUrl =
+            tool.openapiUrl ??
+            (tool.baseUrl
+                ? `${tool.baseUrl.replace(/\/$/, '')}/openapi.json`
+                : '');
+
+        if (!specUrl) {
+            window.alert('该工具暂未配置 OpenAPI 文档地址');
+            return;
+        }
+
+        const query = new URLSearchParams({
+            specUrl,
+            name: tool.name,
+            version: tool.version,
+            ...(tool.baseUrl ? { baseUrl: tool.baseUrl } : {}),
+        }).toString();
+
+        window.open(`/tools/docs?${query}`, '_blank', 'noreferrer');
+    };
 
     const filteredTools = tools.filter((tool) => {
         const matchesSearch =
@@ -131,7 +183,13 @@ export default function ToolsIndex() {
                 ctaLabel="注册工具集"
                 onCtaClick={openCreateModal}
                 items={filteredTools}
-                renderItem={(tool) => <ToolCard tool={tool} />}
+                renderItem={(tool) => (
+                    <ToolCard
+                        tool={tool}
+                        onViewDocs={handleViewDocs}
+                        onEdit={openEditModal}
+                    />
+                )}
                 getKey={(tool) => tool.id}
                 emptyText="暂无符合条件的工具集"
                 gridMinWidth={340}

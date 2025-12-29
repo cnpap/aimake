@@ -21,7 +21,6 @@ export type ToolStatus = 'active' | 'draft' | 'deprecated';
 export interface Tool {
     id: number;
     name: string;
-    type: 'openapi' | 'serverless';
     version: string;
     description: string;
     baseUrl?: string;
@@ -32,10 +31,13 @@ export interface Tool {
     boundAgents: string[];
     tokenConfigured: boolean;
     tags: string[];
+    openapiUrl?: string;
 }
 
 interface ToolCardProps {
     tool: Tool;
+    onViewDocs?: (tool: Tool) => void;
+    onEdit?: (tool: Tool) => void;
 }
 
 const statusStyleMap: Record<ToolStatus, string> = {
@@ -45,7 +47,7 @@ const statusStyleMap: Record<ToolStatus, string> = {
         'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-200',
 };
 
-export function ToolCard({ tool }: ToolCardProps) {
+export function ToolCard({ tool, onViewDocs, onEdit }: ToolCardProps) {
     return (
         <Card className="group relative flex h-full flex-col overflow-hidden border bg-card/50 py-0 text-card-foreground transition-all hover:border-primary/50 hover:bg-card hover:shadow-md">
             <CardHeader className="flex flex-row items-start justify-between space-y-0 p-5 pb-0">
@@ -92,18 +94,16 @@ export function ToolCard({ tool }: ToolCardProps) {
                             </div>
                         </div>
                     </div>
-                    {tool.type === 'openapi' && (
-                        <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-2.5 py-2">
-                            <ShieldCheck className="h-3.5 w-3.5 text-primary/70" />
-                            <div>
-                                <div className="text-xs font-medium text-foreground">
-                                    {tool.tokenConfigured
-                                        ? '已配置密钥'
-                                        : '未配置密钥'}
-                                </div>
+                    <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-2.5 py-2">
+                        <ShieldCheck className="h-3.5 w-3.5 text-primary/70" />
+                        <div>
+                            <div className="text-xs font-medium text-foreground">
+                                {tool.tokenConfigured
+                                    ? '已配置密钥'
+                                    : '未配置密钥'}
                             </div>
                         </div>
-                    )}
+                    </div>
                     <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-2.5 py-2">
                         <Users className="h-3.5 w-3.5 text-primary/70" />
                         <div>
@@ -137,7 +137,7 @@ export function ToolCard({ tool }: ToolCardProps) {
                         className="rounded border bg-muted/50 px-1.5 py-0.5 text-[10px] font-normal text-muted-foreground"
                     >
                         <Code className="mr-1 h-3 w-3" />
-                        {tool.type === 'openapi' ? 'OpenAPI' : 'Serverless'}
+                        OpenAPI
                     </Badge>
                 </div>
             </CardContent>
@@ -154,15 +154,17 @@ export function ToolCard({ tool }: ToolCardProps) {
                         variant="ghost"
                         size="sm"
                         className="h-7 px-2 text-xs"
+                        onClick={() => onViewDocs?.(tool)}
                     >
-                        配置
+                        查看文档
                     </Button>
                     <Button
                         variant="default"
                         size="sm"
                         className="h-7 px-3 text-xs"
+                        onClick={() => onEdit?.(tool)}
                     >
-                        查看文档
+                        编辑
                     </Button>
                 </div>
             </CardFooter>
