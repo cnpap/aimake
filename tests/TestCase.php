@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\ClientRepository;
 
 abstract class TestCase extends BaseTestCase
@@ -16,6 +17,10 @@ abstract class TestCase extends BaseTestCase
 
     private function ensurePersonalAccessClient(): void
     {
+        if (! Schema::hasTable('oauth_clients')) {
+            return;
+        }
+
         /** @var ClientRepository $clients */
         $clients = $this->app->make(ClientRepository::class);
 

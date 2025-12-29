@@ -9,7 +9,7 @@ use Tests\TestCase;
 uses(TestCase::class);
 
 it('内省真实数据库并返回 data_sources 表结构', function (): void {
-    $this->artisan('migrate', ['--force' => true])->assertExitCode(0);
+    $this->artisan('migrate:fresh', ['--force' => true])->assertExitCode(0);
     $this->artisan('db:seed', ['--force' => true])->assertExitCode(0);
 
     $dataSource = DataSource::query()->findOrFail(1);

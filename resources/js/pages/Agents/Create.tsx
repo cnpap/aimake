@@ -24,7 +24,7 @@ export default function AgentCreate() {
     });
 
     const onSubmit = (data: AgentFormValues) => {
-        router.post(store.url(), data as any);
+        router.post(store.url(), data);
     };
 
     return (
