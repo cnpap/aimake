@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_sources', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->comment('数据源名称（用户可读）');
             $table->string('driver')->comment('驱动类型，如 postgres/mysql/clickhouse/http 等');
             $table->string('ingest_mode')->default('full')->comment('采集模式：full 全量，incremental 增量');

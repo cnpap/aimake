@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dimensions', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('slug')->unique()->comment('维度唯一标识');
             $table->string('name')->comment('维度名称');
             $table->boolean('is_composite')->default(false)->comment('是否联合主键');

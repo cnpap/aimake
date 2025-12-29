@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUuidV7;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
- * @property int $dimension_id
+ * @property string $id
+ * @property string $dimension_id
  * @property string $code 属性编码，全局唯一，供映射与 AI 使用
  * @property string $label 显示名称
  * @property string $data_type 数据类型：string/integer/decimal/date/datetime/json
@@ -24,7 +25,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Dimension $dimension
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DimensionMapping> $mappings
  * @property-read int|null $mappings_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionAttribute newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionAttribute newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionAttribute query()
@@ -41,12 +41,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionAttribute whereRules($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionAttribute whereSampleValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionAttribute whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class DimensionAttribute extends Model
 {
     use HasFactory;
+    use HasUuidV7;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the primary key ID.
+     */
+    protected $keyType = 'string';
 
     protected $fillable = [
         'dimension_id',

@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUuidV7;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property int $dimension_attribute_id
- * @property int $data_source_id
+ * @property string $id
+ * @property string $dimension_attribute_id
+ * @property string $data_source_id
  * @property string|null $schema_name Schema/数据库名，可为空
  * @property string $table_name 来源表名
  * @property string $column_name 来源字段名
@@ -19,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\DimensionAttribute $attribute
  * @property-read \App\Models\DataSource $dataSource
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionMapping newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionMapping newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionMapping query()
@@ -33,12 +33,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionMapping whereColumnName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionMapping whereSchemaName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DimensionMapping whereTableName($value)
- *
  * @mixin \Eloquent
  */
 class DimensionMapping extends Model
 {
     use HasFactory;
+    use HasUuidV7;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the primary key ID.
+     */
+    protected $keyType = 'string';
 
     protected $fillable = [
         'dimension_attribute_id',

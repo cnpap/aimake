@@ -23,7 +23,7 @@ class IntrospectDataSourceService
      *
      * @return list<TableMetadata>
      */
-    public function listTables(int $dataSourceId): array
+    public function listTables(string $dataSourceId): array
     {
         $dataSource = DataSource::query()->findOrFail($dataSourceId);
         $adapter = $this->resolveAdapter($dataSource->driver);

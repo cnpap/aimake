@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUuidV7;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $name 数据源名称（用户可读）
  * @property string $driver 驱动类型，如 postgres/mysql/clickhouse/http 等
  * @property string $ingest_mode 采集模式：full 全量，incremental 增量
@@ -26,7 +27,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $last_scanned_at 最近扫描时间
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataSource newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataSource newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataSource query()
@@ -50,12 +50,23 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataSource wherePrefix($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataSource wherePrefixIndexes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DataSource whereUrl($value)
- *
+ * @method static \Database\Factories\DataSourceFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class DataSource extends Model
 {
     use HasFactory;
+    use HasUuidV7;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the primary key ID.
+     */
+    protected $keyType = 'string';
 
     public const INGEST_MODES = ['full', 'incremental'];
 

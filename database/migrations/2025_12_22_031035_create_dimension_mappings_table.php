@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dimension_mappings', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('dimension_attribute_id')->constrained()->cascadeOnDelete()->comment('目标维度属性');
-            $table->foreignId('data_source_id')->constrained()->cascadeOnDelete()->comment('数据源');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('dimension_attribute_id')->constrained()->cascadeOnDelete()->comment('目标维度属性');
+            $table->foreignUuid('data_source_id')->constrained()->cascadeOnDelete()->comment('数据源');
             $table->string('schema_name')->nullable()->comment('Schema/数据库名，可为空');
             $table->string('table_name')->comment('来源表名');
             $table->string('column_name')->comment('来源字段名');

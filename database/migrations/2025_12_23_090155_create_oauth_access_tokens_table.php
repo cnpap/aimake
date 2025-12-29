@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('oauth_access_tokens', function (Blueprint $table) {
             $table->char('id', 80)->primary()->comment('访问令牌 ID');
-            $table->foreignId('user_id')->nullable()->index()->comment('用户 ID');
+            $table->foreignUuid('user_id')->nullable()->index()->comment('用户 ID');
             $table->foreignUuid('client_id')->comment('客户端 ID');
             $table->string('name')->nullable()->comment('令牌名称');
             $table->text('scopes')->nullable()->comment('授权范围');

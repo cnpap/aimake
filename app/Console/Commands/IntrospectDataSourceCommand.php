@@ -34,7 +34,7 @@ class IntrospectDataSourceCommand extends Command
     public function handle(): int
     {
         $dataSources = DataSource::query()
-            ->orderBy('id')
+            ->orderBy('created_at')
             ->get(['id', 'name', 'driver', 'database', 'status', 'tables_count']);
 
         if ($dataSources->isEmpty()) {
@@ -62,12 +62,12 @@ class IntrospectDataSourceCommand extends Command
         $dataSourceId = $this->argument('dataSourceId')
             ?? $this->choice(
                 '选择要内省的数据源 ID',
-                $dataSources->pluck('id')->map(fn (int $id): string => (string) $id)->toArray(),
+                $dataSources->pluck('id')->map(static fn (string $id): string => $id)->toArray(),
                 (string) $dataSources->first()->id
             );
 
         /** @var DataSource|null $dataSource */
-        $dataSource = $dataSources->firstWhere('id', (int) $dataSourceId);
+        $dataSource = $dataSources->firstWhere('id', $dataSourceId);
 
         if (! $dataSource) {
             $this->error("未找到 ID 为 {$dataSourceId} 的数据源。");

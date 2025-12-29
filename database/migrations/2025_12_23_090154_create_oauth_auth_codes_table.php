@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('oauth_auth_codes', function (Blueprint $table) {
             $table->char('id', 80)->primary()->comment('授权码唯一标识');
-            $table->foreignId('user_id')->index()->comment('用户 ID');
+            $table->foreignUuid('user_id')->index()->comment('用户 ID');
             $table->foreignUuid('client_id')->comment('客户端 ID');
             $table->text('scopes')->nullable()->comment('授权范围');
             $table->boolean('revoked')->comment('是否已吊销');

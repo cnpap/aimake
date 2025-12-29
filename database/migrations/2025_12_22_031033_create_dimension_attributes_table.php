@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dimension_attributes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('dimension_id')->constrained()->cascadeOnDelete()->comment('所属维度');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('dimension_id')->constrained()->cascadeOnDelete()->comment('所属维度');
             $table->string('code')->comment('属性编码，全局唯一，供映射与 AI 使用');
             $table->string('label')->comment('显示名称');
             $table->string('data_type')->default('string')->comment('数据类型：string/integer/decimal/date/datetime/json');

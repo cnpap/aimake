@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasUuidV7;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $slug 维度唯一标识
  * @property string $name 维度名称
  * @property bool $is_composite 是否联合主键
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DimensionAttribute> $attributes
  * @property-read int|null $attributes_count
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dimension newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dimension newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dimension query()
@@ -31,12 +31,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dimension whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dimension whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Dimension whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Dimension extends Model
 {
     use HasFactory;
+    use HasUuidV7;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the primary key ID.
+     */
+    protected $keyType = 'string';
 
     protected $fillable = [
         'slug',

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('oauth_device_codes', function (Blueprint $table) {
             $table->char('id', 80)->primary()->comment('设备码 ID');
-            $table->foreignId('user_id')->nullable()->index()->comment('授权用户 ID');
+            $table->foreignUuid('user_id')->nullable()->index()->comment('授权用户 ID');
             $table->foreignUuid('client_id')->index()->comment('客户端 ID');
             $table->char('user_code', 8)->unique()->comment('用户输入码');
             $table->text('scopes')->comment('授权范围');
